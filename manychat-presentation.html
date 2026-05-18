@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ManyChat Automation — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Onest:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080C12;
+    --bg2: #0D1520;
+    --card: #111927;
+    --border: rgba(255,255,255,0.07);
+    --accent: #C8FF00;
+    --accent2: #00E5FF;
+    --white: #F0F4FF;
+    --muted: #5A6A80;
+    --text: #B8C8DC;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Onest', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(8,12,18,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.12em; color: var(--accent);
+    text-transform: uppercase;
+  }
+  .nav-dots {
+    display: flex; gap: 8px;
+  }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted); cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    border: none;
+  }
+  .nav-dot.active { background: var(--accent); transform: scale(1.3); }
+
+  /* SECTIONS */
+  section {
+    min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 32px 60px;
+    position: relative; overflow: hidden;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; width: 100%; }
+
+  /* BG noise texture */
+  section::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  section > * { position: relative; z-index: 1; }
+
+  /* GLOW BLOBS */
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); pointer-events: none; z-index: 0;
+    opacity: 0.15;
+  }
+
+  /* SLIDE 1 — HERO */
+  #s1 { background: var(--bg); }
+  #s1 .blob1 { width: 500px; height: 500px; background: #C8FF00; top: -200px; right: -150px; }
+  #s1 .blob2 { width: 300px; height: 300px; background: #00E5FF; bottom: -100px; left: -100px; opacity: 0.08; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.25);
+    color: var(--accent);
+    font-size: 11px; font-weight: 500;
+    padding: 6px 14px; border-radius: 100px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(32px, 7vw, 72px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+
+  .hero-sub {
+    font-size: clamp(14px, 2vw, 18px);
+    color: var(--text); max-width: 560px;
+    line-height: 1.7; margin-bottom: 48px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 40px; flex-wrap: wrap;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 800; color: var(--white);
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* SLIDE 2 — CONTEXT */
+  #s2 { background: var(--bg2); }
+  #s2 .blob1 { width: 400px; height: 400px; background: #00E5FF; top: -100px; left: -150px; opacity: 0.07; }
+
+  .section-eyebrow {
+    font-size: 11px; font-weight: 500;
+    color: var(--accent2); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(24px, 4.5vw, 48px);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 48px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .card:hover { border-color: rgba(200,255,0,0.3); transform: translateY(-3px); }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover::before { opacity: 1; }
+  .card-icon { font-size: 28px; margin-bottom: 16px; }
+  .card-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 12px; color: var(--white);
+  }
+  .card-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+  /* SLIDE 3 — SPEED */
+  #s3 { background: var(--bg); }
+  #s3 .blob1 { width: 600px; height: 300px; background: var(--accent); bottom: -200px; right: -200px; opacity: 0.06; }
+
+  .speed-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 48px; align-items: center;
+  }
+  .big-number {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(80px, 15vw, 160px);
+    font-weight: 800; line-height: 0.9;
+    color: var(--white); letter-spacing: -0.04em;
+  }
+  .big-number span { color: var(--accent); }
+  .big-number-label {
+    font-size: clamp(14px, 2vw, 20px);
+    color: var(--muted); margin-top: 8px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: 'Unbounded', sans-serif; font-weight: 300;
+  }
+
+  .checklist { display: flex; flex-direction: column; gap: 16px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 18px 20px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .check-item:hover { border-color: rgba(200,255,0,0.2); }
+  .check-icon {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(200,255,0,0.15);
+    border: 1px solid rgba(200,255,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--accent); margin-top: 1px;
+  }
+  .check-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .check-text strong { color: var(--white); font-weight: 500; }
+
+  .quote-box {
+    margin-top: 32px; padding: 20px 24px;
+    border-left: 3px solid var(--accent);
+    background: rgba(200,255,0,0.04);
+    border-radius: 0 12px 12px 0;
+  }
+  .quote-text { font-size: 14px; color: var(--text); line-height: 1.7; font-style: italic; }
+
+  /* SLIDE 4 — TOOLS */
+  #s4 { background: var(--bg2); }
+  #s4 .blob1 { width: 400px; height: 400px; background: #00E5FF; top: 0; right: -150px; opacity: 0.06; }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 28px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+  .tool-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-3px); }
+  .tool-card-top {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .tool-badge {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .tool-badge.green { background: rgba(200,255,0,0.12); }
+  .tool-badge.cyan { background: rgba(0,229,255,0.12); }
+  .tool-badge.purple { background: rgba(150,100,255,0.12); }
+  .tool-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 15px; font-weight: 600; color: var(--white);
+  }
+  .tool-desc { font-size: 13.5px; color: var(--text); line-height: 1.7; }
+
+  /* SLIDE 5 — PRINCIPLES */
+  #s5 { background: var(--bg); }
+
+  .principles-stack { display: flex; flex-direction: column; gap: 20px; }
+  .principle {
+    display: grid; grid-template-columns: 64px 1fr;
+    gap: 24px; align-items: start;
+    padding: 28px; border-radius: 16px;
+    background: var(--card); border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .principle:hover { border-color: rgba(200,255,0,0.2); }
+  .principle-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 36px; font-weight: 800;
+    color: rgba(200,255,0,0.2); line-height: 1;
+    padding-top: 4px;
+  }
+  .principle-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--white); margin-bottom: 10px;
+  }
+  .principle-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+  /* SLIDE 6 — CTA */
+  #s6 { background: var(--bg2); text-align: center; align-items: center; }
+  #s6 .blob1 { width: 700px; height: 500px; background: var(--accent); top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.04; }
+
+  #s6 .container { display: flex; flex-direction: column; align-items: center; }
+
+  .cta-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(28px, 6vw, 64px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 700px; margin-bottom: 24px;
+  }
+  .cta-title em { font-style: normal; color: var(--accent); }
+
+  .cta-sub {
+    font-size: clamp(14px, 2vw, 17px);
+    color: var(--text); max-width: 500px;
+    line-height: 1.7; margin-bottom: 48px;
+  }
+
+  .goals-row {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    margin-bottom: 48px;
+  }
+  .goal-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 100px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 13px; color: var(--text);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .goal-pill:hover { border-color: rgba(200,255,0,0.3); color: var(--white); }
+  .goal-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 16px 40px; border-radius: 100px;
+    background: var(--accent); color: #080C12;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(200,255,0,0.3);
+  }
+  .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(200,255,0,0.4); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.1s;
+  }
+
+  /* ANIMATIONS */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+  .reveal-delay-6 { transition-delay: 0.6s; }
+
+  /* MOBILE */
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    section { padding: 90px 20px 50px; }
+    .speed-layout { grid-template-columns: 1fr; gap: 32px; }
+    .big-number { font-size: 100px; }
+    .principle { grid-template-columns: 1fr; gap: 8px; }
+    .principle-num { font-size: 24px; }
+    .hero-stats { gap: 28px; }
+    h2 { margin-bottom: 32px; }
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    width: 40px; height: 3px;
+    background: var(--accent);
+    margin-bottom: 32px; border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<nav>
+  <div class="nav-logo">Для Елены · ManyChat</div>
+  <div class="nav-dots" id="navDots">
+    <button class="nav-dot active" onclick="scrollToSection(0)" title="Intro"></button>
+    <button class="nav-dot" onclick="scrollToSection(1)" title="Context"></button>
+    <button class="nav-dot" onclick="scrollToSection(2)" title="Speed"></button>
+    <button class="nav-dot" onclick="scrollToSection(3)" title="Tools"></button>
+    <button class="nav-dot" onclick="scrollToSection(4)" title="Principles"></button>
+    <button class="nav-dot" onclick="scrollToSection(5)" title="Goals"></button>
+  </div>
+</nav>
+
+<!-- S1: HERO -->
+<section id="s1">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="container">
+    <div class="tag reveal"><span class="tag-dot"></span>Специально для Елены Левы</div>
+    <h1 class="reveal reveal-delay-1">
+      Готовая связка<br><em>за 24 часа</em>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">
+      Вчера вечером я впервые услышал о ManyChat — из вашей вакансии. Сегодня первая связка уже настроена и протестирована. Это не слова — это живой результат.
+    </p>
+    <div class="hero-stats reveal reveal-delay-3">
+      <div class="stat-item">
+        <div class="stat-num">24<span>ч</span></div>
+        <div class="stat-label">с нуля до результата</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1<span>я</span></div>
+        <div class="stat-label">связка уже живёт</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">готов развиваться</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2: STORY -->
+<section id="s2">
+  <div class="blob blob1"></div>
+  <div class="container">
+    <div class="section-eyebrow reveal">02 — История</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="reveal reveal-delay-1">Как это<br>началось</h2>
+    <div class="cards-grid">
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon">📩</div>
+        <div class="card-title">Вчера вечером</div>
+        <div class="card-text">Увидел вашу вакансию. ManyChat — для меня абсолютно новый инструмент. Но я не отложил на потом. Сел и начал разбираться прямо в ту же ночь.</div>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">8 месяцев в IT</div>
+        <div class="card-text">Полностью погружён в разработку и автоматизацию. Рабочий день — от 6 до 15 часов. Каждый день — новые инструменты и задачи. Это мой стиль работы.</div>
+      </div>
+      <div class="card reveal reveal-delay-4">
+        <div class="card-icon">🔥</div>
+        <div class="card-title">Сегодня — результат</div>
+        <div class="card-text">Связка настроена и работает. Я сделал это специально для вас — чтобы не просто говорить, а показать. Слова ничего не стоят без доказательств.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3: LIVE TEST -->
+<section id="s3">
+  <div class="blob blob1"></div>
+  <div class="container">
+    <div class="section-eyebrow reveal">03 — Живой тест</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="reveal reveal-delay-1">Проверьте<br>прямо сейчас</h2>
+    <div class="speed-layout">
+      <div class="reveal reveal-delay-2">
+        <div class="big-number" style="font-size: clamp(48px,8vw,96px); line-height:1.1;">eld1<span>yarov</span><br>_777</div>
+        <div class="big-number-label" style="margin-top:12px;">тестовый<br>аккаунт</div>
+      </div>
+      <div>
+        <div class="checklist">
+          <div class="check-item reveal reveal-delay-2">
+            <div class="check-icon">1</div>
+            <div class="check-text">Открыть Instagram и найти аккаунт <strong>@eld1yarov_777</strong></div>
+          </div>
+          <div class="check-item reveal reveal-delay-3">
+            <div class="check-icon">2</div>
+            <div class="check-text">Найти Reels — там есть видео с активной воронкой</div>
+          </div>
+          <div class="check-item reveal reveal-delay-4">
+            <div class="check-icon">3</div>
+            <div class="check-text">Написать в комментарии кодовое слово: <strong>Квартира</strong></div>
+          </div>
+          <div class="check-item reveal reveal-delay-5">
+            <div class="check-icon">4</div>
+            <div class="check-text">Получить автоматический ответ в Директ — мгновенно</div>
+          </div>
+        </div>
+        <div class="quote-box reveal reveal-delay-6">
+          <div class="quote-text">Это сделано специально для вас, Елена — чтобы вы могли пощупать руками до любых договорённостей.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4: TOOLS -->
+<section id="s4">
+  <div class="blob blob1"></div>
+  <div class="container">
+    <div class="section-eyebrow reveal">04 — Стек</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="reveal reveal-delay-1">Инструменты</h2>
+    <div class="tools-grid">
+      <div class="tool-card reveal reveal-delay-2">
+        <div class="tool-card-top">
+          <div class="tool-badge green">📲</div>
+          <div class="tool-name">ManyChat</div>
+        </div>
+        <div class="tool-desc">Построение безопасных воронок по официальному API. Настройка триггеров на комментарии и Директ. Рандомизация ответов против бана.</div>
+      </div>
+      <div class="tool-card reveal reveal-delay-3">
+        <div class="tool-card-top">
+          <div class="tool-badge cyan">🤖</div>
+          <div class="tool-name">AI & n8n</div>
+        </div>
+        <div class="tool-desc">Работа с ИИ-инструментами и генерацией контента. Первые связки в n8n для автоматизации рутинных бизнес-процессов.</div>
+      </div>
+      <div class="tool-card reveal reveal-delay-4">
+        <div class="tool-card-top">
+          <div class="tool-badge purple">⌨️</div>
+          <div class="tool-name">Разработка</div>
+        </div>
+        <div class="tool-desc">Базовое понимание Supabase и SQL. Активное изучение Dart/Flutter для кастомных SaaS-решений в будущем.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S5: PRINCIPLES -->
+<section id="s5">
+  <div class="container">
+    <div class="section-eyebrow reveal">05 — Принципы</div>
+    <div class="section-divider reveal reveal-delay-1"></div>
+    <h2 class="reveal reveal-delay-1">Как я работаю</h2>
+    <div class="principles-stack">
+      <div class="principle reveal reveal-delay-2">
+        <div class="principle-num">01</div>
+        <div>
+          <div class="principle-title">Безопасность аккаунта</div>
+          <div class="principle-text">Знаю риски лимитов Instagram. Для защиты от теневого бана настраиваю рандомизацию ответов бота в комментариях — для алгоритмов Meta это выглядит как естественная активность живого человека.</div>
+        </div>
+      </div>
+      <div class="principle reveal reveal-delay-3">
+        <div class="principle-num">02</div>
+        <div>
+          <div class="principle-title">Доведение до результата</div>
+          <div class="principle-text">Если в процессе настройки возникает техническая сложность — не бросаю задачу. Тестирую систему до тех пор, пока она не заработает идеально. Сдаю только рабочее решение.</div>
+        </div>
+      </div>
+      <div class="principle reveal reveal-delay-4">
+        <div class="principle-num">03</div>
+        <div>
+          <div class="principle-title">Честность и прозрачность</div>
+          <div class="principle-text">Всегда честно говорю, что умею сейчас, а что ещё изучаю. Это позволяет строить доверие и избегать ситуаций, когда ожидания расходятся с реальностью.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S6: CTA -->
+<section id="s6">
+  <div class="blob blob1"></div>
+  <div class="container">
+    <div class="section-eyebrow reveal">06 — Предложение</div>
+    <h2 class="cta-title reveal reveal-delay-1">
+      Готов работать<br>с вами, <em>Елена</em>
+    </h2>
+    <p class="cta-sub reveal reveal-delay-2">
+      ManyChat я изучил ради вашей задачи. Готов настраивать связки, разбираться в нюансах и расти вместе с вашим проектом. Долгосрочное сотрудничество — именно то, что мне нужно.
+    </p>
+    <div class="goals-row reveal reveal-delay-3">
+      <div class="goal-pill"><span class="goal-pill-dot"></span>Первая связка готова</div>
+      <div class="goal-pill"><span class="goal-pill-dot"></span>Знаю лимиты Instagram</div>
+      <div class="goal-pill"><span class="goal-pill-dot"></span>Готов к сложным воронкам</div>
+      <div class="goal-pill"><span class="goal-pill-dot"></span>Буду расти с вами</div>
+    </div>
+    <a href="https://www.instagram.com/eld1yarov_777" target="_blank" class="cta-btn reveal reveal-delay-4">Проверить живой тест →</a>
+  </div>
+</section>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const dots = document.querySelectorAll('.nav-dot');
+  const progress = document.getElementById('progress');
+
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    const pct = window.scrollY / max;
+    progress.style.transform = `scaleX(${pct})`;
+
+    // Active dot
+    let current = 0;
+    sections.forEach((s, i) => {
+      if (window.scrollY >= s.offsetTop - window.innerHeight / 2) current = i;
+    });
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  });
+
+  // Scroll to section
+  function scrollToSection(i) {
+    sections[i].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
